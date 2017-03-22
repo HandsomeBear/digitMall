@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		
+		<property name="loginUrl" value="/login"/> 
+		<property name="successUrl" value="/index"/>
+		<property name="unauthorizedUrl" value="/unauthorized"/>
+		
+		<property name="filterChainDefinitions">
+			<value>
+			 	/ = anon
+			 	/login = anon
+			 	/index = anon
+				/admin/** = anon
+				/resources/** = anon
+			 	/person/** = authc
+			 	/address/** = authc
+			 	/joincart = authc
+			 	/tocart = authc
+			 	/querycart = authc
+			 	/removecartbyone = authc
+			 	/queryaddress = authc
+			 	/toorder = authc
+			 	/geneorderpage = authc
+			 	/geneorder = authc
+			 	/paypage = authc
+			 	/pay = authc
+			 	/topay = authc
+			 	/executepay = authc
+			 	/paysuccess = authc
+			 	/toorderquerypage = authc
+			 	/orderquery = authc
+			 	/judge = authc
+			 	/tojudge = authc
+			 	/tojudgeforcomment = authc
+			 	/querybyorderno = authc
+			 	/receive = authc
+			 	/executejudge = authc
+			 	/refund = authc
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+ 	</bean>
+ 	
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="sampleRealm"/>
+		<property name="cacheManager" ref="shiroCacheManager"/>
+	</bean>
+	
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+	
+	<bean id="sha512Matcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		<property name="hashAlgorithmName" value="${shiro.hashAlgorithmName}" />
+		<property name="storedCredentialsHexEncoded" value="${shiro.storedCredentialsHexEncoded}" />
+		<property name="hashIterations" value="${shiro.hashIterations}" />
+	</bean>
+	
+	<import resource="classpath*:shiro-realm.xml"/>
+
+</beans>
